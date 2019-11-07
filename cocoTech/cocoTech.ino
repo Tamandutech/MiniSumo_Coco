@@ -1,5 +1,6 @@
 #include <Ultrasonic.h>
 
+
 const int m1 = 5;
 const int m2 = 6;
 const int dir1 = 7;
@@ -23,30 +24,31 @@ void setup() {
  pinMode(dir2, OUTPUT);
  Serial.begin(9600);
  delay(3300);
+ drift();
   }
 
 void loop(){
-   
-
-  if(digitalRead(cod1)==1&&digitalRead(cod2)==0){
-  while(true){
-  retao();
-  } 
- }
-  else if(digitalRead(cod1)==0&&digitalRead(cod2)==1){
-  while(true){
-  gira();
-  }
-  }
-  else{
-    while(true){
-    retao();
-  }
+  distancia = ultrasonic.read();
+  valorSensor1 = analogRead(A0);
+  valorSensor2 = analogRead(A1); 
+  Serial.println(distancia);
+   if(distancia < 35){   
+     frente(100, 100);
+   if(distancia < 25){
+      frente(250, 250);
+      } 
+  }else{
+  viradireita(80, 80);
+    }
+  //refletancia - quando for colocar no tatame, inverter sinais
+  if(valorSensor1 < 700 || valorSensor2 < 700){
+  tras(100, 100); 
+  delay(200);
+  viradireita(100,100);
+  delay(200);
   }
 
 }
-
-
 void tras(int pa, int pb){
  digitalWrite(dir1, LOW);
  digitalWrite(dir2, LOW);
@@ -74,68 +76,11 @@ void viraesquerda(int pa, int pb){
  analogWrite(m1, pa);
  analogWrite(m2, pb);
 }
-
-
-
-void direcao(){
- if(valorSensor1 > valorSensor2){
-  tras(a, b);
-  delay(200);
-  viradireita(a, 0);
-  delay(500);
- }
-      
- else if (valorSensor1 < valorSensor2){
-  tras(a, b);
-  viraesquerda(0, b);
- }
-    
- else{
-  tras(a, b);
-  viradireita(a, 0);
- }       
-}
-
-void retao(){
-   recarrega();
-   Serial.println(distancia);
-   if(distancia < 25){   
-     frente(100, 100);
-     if(distancia < 14){
-      frente(200, 200);
-      }
-  }
-  //refletancia - quando for colocar no tatame, inverter sinais
-  if(valorSensor1 < 500 || valorSensor2 < 500){
-  tras(100, 100); 
-  viradireita(100,100);
-  }
-  frente(100, 100);
-  }
-
-  void gira(){
-  recarrega();
-  if(distancia < 25){   
-     frente(100, 100);
-    Serial.print("Frente");
-  }else if(distancia < 14){
-    frente(200, 200);
-    }else{
-  viradireita(100, 100);
-  }
-  //refletancia - quando for colocar no tatame, inverter sinais
-  if(valorSensor1 < 500 || valorSensor2 < 500){
-  tras(100, 100); 
-  delay(500);
-  viradireita(100,100);
-  delay(500);
-  }
-  }
-
-  void recarrega(){
-  distancia = ultrasonic.read();
-  valorSensor1 = analogRead(A0);
-  valorSensor2 = analogRead(A1); 
-  frente(100, 100); 
+void drift(){
+ viraesquerda(250,250);
+ delay(80);
+ frente(250, 110);
+ delay(300);
     }
+
   
