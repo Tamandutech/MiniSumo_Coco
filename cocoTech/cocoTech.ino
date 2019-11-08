@@ -1,6 +1,5 @@
 #include <Ultrasonic.h>
 
-
 const int m1 = 5;
 const int m2 = 6;
 const int dir1 = 7;
@@ -10,10 +9,8 @@ int a = 100;
 int b = 100;
 const int cod1 = 3;
 const int cod2 = 4;
-
 int valorSensor1 = 0;
 int valorSensor2 = 0;
-
 int distancia;
 Ultrasonic ultrasonic(13, 12);
 
@@ -24,7 +21,13 @@ void setup() {
  pinMode(dir2, OUTPUT);
  Serial.begin(9600);
  delay(3300);
- drift();
+ 
+ //define qual estretégia será usada
+ if(digitalRead(cod1) == HIGH){
+  frentao();
+  }else{
+    drift();   
+  }
   }
 
 void loop(){
@@ -40,7 +43,6 @@ void loop(){
   }else{
   viradireita(80, 80);
     }
-  //refletancia - quando for colocar no tatame, inverter sinais
   if(valorSensor1 < 700 || valorSensor2 < 700){
   tras(100, 100); 
   delay(200);
@@ -49,38 +51,37 @@ void loop(){
   }
 
 }
+
+//Funções de direção
 void tras(int pa, int pb){
  digitalWrite(dir1, LOW);
  digitalWrite(dir2, LOW);
  analogWrite(m1, pa);
  analogWrite(pa, pb);
 }
-
 void frente(int pa, int pb){
  digitalWrite(dir1, HIGH);
  digitalWrite(dir2, HIGH);
  analogWrite(m1, pa);
  analogWrite(m2, pb);
 }
-
 void viradireita(int pa, int pb){
  digitalWrite(dir1, HIGH);
  digitalWrite(dir2, LOW); 
  analogWrite(m1, pa);
  analogWrite(m2, pb);
 }
-
 void viraesquerda(int pa, int pb){
  digitalWrite(dir1, LOW);
  digitalWrite(dir2, HIGH); 
  analogWrite(m1, pa);
  analogWrite(m2, pb);
 }
+//Funções de estratégia
 void drift(){
- viraesquerda(250,250);
- delay(80);
- frente(250, 110);
- delay(300);
-    }
-
-  
+  viraesquerda(250,250);
+  delay(80);
+  frente(250, 110);
+  delay(300);
+}
+void frentao(){
